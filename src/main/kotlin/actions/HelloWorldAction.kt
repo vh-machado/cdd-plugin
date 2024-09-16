@@ -1,16 +1,10 @@
 package actions
 
-import com.esotericsoftware.kryo.kryo5.serializers.FieldSerializer.NotNull
-import com.example.helloworld.BackgroundTask
-import com.example.helloworld.service.MyBackgroundService
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.LangDataKeys
-import com.intellij.openapi.components.service
-import com.intellij.openapi.ui.Messages
 import com.intellij.psi.*
-import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.openapi.project.Project
 
 class HelloWorldAction : AnAction() {
@@ -36,10 +30,10 @@ class HelloWorldAction : AnAction() {
         println(message)
 
         val project: Project? = event.project
-        val projectService = project?.service<MyBackgroundService>()
+        //val projectService = project?.service<MyBackgroundService>()
 
         // Rodar a tarefa em background
-        BackgroundTask(project).queue()
+        //BackgroundTask(project).queue()
 
         /*
         val infoBuilder = StringBuilder()

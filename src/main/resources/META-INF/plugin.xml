@@ -27,10 +27,6 @@
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
         <postStartupActivity implementation="com.example.helloworld.listener.ProjectOpenStartupActivity"/>
-
-        <projectService
-                serviceInterface="com.example.helloworld.service.MyBackgroundService"
-                serviceImplementation="com.example.helloworld.service.MyBackgroundServiceImpl"/>
     </extensions>
 
     <actions>
@@ -42,4 +38,10 @@
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
     </actions>
+
+    <projectListeners>
+        <listener
+                class="com.example.helloworld.listener.FileChangeListener"
+                topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
+    </projectListeners>
 </idea-plugin>
