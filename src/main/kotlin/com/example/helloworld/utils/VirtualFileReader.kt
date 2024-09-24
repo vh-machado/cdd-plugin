@@ -41,14 +41,17 @@ open class VirtualFileReader {
                             val ifStatements = PsiTreeUtil.collectElementsOfType(psiFile, PsiIfStatement::class.java)
                             val rule: Rule = rules.find { it.name == "IF_STATEMENT" }!!
                             println("IF_STATEMENT => ${ifStatements.size} (amount) * ${rule.cost} (cost) = ${ifStatements.size * rule.cost}")
+                            showNotification(project,"${virtualFile}: IF_STATEMENT => ${ifStatements.size} (amount) * ${rule.cost} (cost) = ${ifStatements.size * rule.cost}")
                         }
 
                         if(rules.any { it.name == "ANNOTATION" }) {
                             val annotations = PsiTreeUtil.collectElementsOfType(psiFile, PsiAnnotation::class.java)
                             val rule: Rule = rules.find { it.name == "ANNOTATION" }!!
                             println("ANNOTATION => ${annotations.size} (amount) * ${rule.cost} (cost) = ${annotations.size * rule.cost}")
-                            println("")
+                            showNotification(project,"${virtualFile}: ANNOTATION => ${annotations.size} (amount) * ${rule.cost} (cost) = ${annotations.size * rule.cost}")
+
                         }
+                        println("")
                     }
                 } else {
                     println("Arquivo não encontrado: $relativeFilePath")

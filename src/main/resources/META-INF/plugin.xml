@@ -27,6 +27,10 @@
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
         <postStartupActivity implementation="com.example.helloworld.listener.ProjectOpenStartupActivity"/>
+
+        <notificationGroup id="Code Notification"
+                           displayType="BALLOON"
+                           isLogByDefault="true"/>
     </extensions>
 
     <actions>
