@@ -1,4 +1,4 @@
-package com.example.helloworld.utils
+package com.example.cddplugin.utils
 
 data class Rule(
         val name: String,

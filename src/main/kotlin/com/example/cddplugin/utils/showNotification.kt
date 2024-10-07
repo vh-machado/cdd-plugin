@@ -1,4 +1,4 @@
-package com.example.helloworld.utils
+package com.example.cddplugin.utils
 
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType

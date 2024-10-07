@@ -5,4 +5,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "helloworld"
+rootProject.name = "cdd-plugin"
