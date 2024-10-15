@@ -73,20 +73,6 @@ class GroqChat {
                     }
                 }
 
-                /*val groqMessageContent: String = "Você é um plugin da IDE Intellij capaz de analisar código e a ocorrência de certas estruturas no código. Responda objetivamente apenas com um json, sem verbosidade, sem explicação e justificativa. Para cada regra, deve ser dado um custo de acordo com a ocorrência da regra. Utilize o seguinte arquivo de configuração:\n" +
-                        cddConfig +
-                        "O arquivo json de configuração fornecido contém objetos com os atributos:\n" +
-                        "1. name: Nome da regra que define qual tipo de estrutura deve ser analisada no código\n" +
-                        "2. cost: Custo para cada ocorrência dessa regra no código\n"+
-                        "O arquivo json de configuração também apresenta o atributo limit, que delimita o limite para o total de custo de cada regra.\n"+
-                        "Calcule o custo total para cada regra no seguinte código, se limitando a apenas as regras fornecidas no arquivo de configuração. Se o arquivo não possuir nenhuma das ocorrências, apenas zere o custo, mas ainda retorne o json, sem anotações ou observações.\n" +
-                        "Código a ser analisado:\n\n"
-                        codeText + "\n\n" +
-                        "O json de resposta da análise deve conter o array de objetos a seguinte exata estrutura:\n" +
-                        "1. name: Nome da regra analisada\n" +
-                        "2. totalCost: Custo total calculado para as ocorrências da regra"
-                */
-
                 val groqMessageContent = """
                     Você é um plugin da IDE Intellij capaz de analisar código e a ocorrência de certas estruturas no código. Responda objetivamente apenas com um json, sem verbosidade, sem explicação e justificativa. Para cada regra, deve ser dado um custo de acordo com a ocorrência da regra. Utilize o seguinte arquivo de configuração:
                 

@@ -22,7 +22,7 @@ class CodeAnalyzer: VirtualFileReader() {
                 println("$rule: $cost")
 
                 if(cost > cddConfigJson.limit) {
-                    println("WARN: $rule exceeded the limit!")
+                    showNotification(project, "CDD Limit Exceeded", "$rule exceeded the limit!")
                 }
             }
         }
