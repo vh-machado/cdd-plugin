@@ -62,7 +62,9 @@ data class XGroq(
 )
 
 class GroqChat {
-    fun fetchCognitiveDrivenDevelopmentAnalysis(cddConfig: String?, codeText: String?) {
+    fun fetchCognitiveDrivenDevelopmentAnalysis(cddConfig: String?, codeText: String?): Map<String, Int>? {
+        var responseMetrics: Map<String, Int>? = null
+
         runBlocking {
             try {
                 val client = HttpClient(CIO) {
@@ -71,34 +73,56 @@ class GroqChat {
                     }
                 }
 
-                val groqMessageContent: String = "Responda objetivamente apenas com um json, sem verbosidade, sem explicação e justificativa. Para cada regra, deve ser dado um custo de acordo com a ocorrência da regra. Utilize o seguinte arquivo de configuração:\n" +
+                /*val groqMessageContent: String = "Você é um plugin da IDE Intellij capaz de analisar código e a ocorrência de certas estruturas no código. Responda objetivamente apenas com um json, sem verbosidade, sem explicação e justificativa. Para cada regra, deve ser dado um custo de acordo com a ocorrência da regra. Utilize o seguinte arquivo de configuração:\n" +
                         cddConfig +
-                        "Calcule o custo total para cada regra no seguinte código:\\n\\n\n" +
-                        codeText
+                        "O arquivo json de configuração fornecido contém objetos com os atributos:\n" +
+                        "1. name: Nome da regra que define qual tipo de estrutura deve ser analisada no código\n" +
+                        "2. cost: Custo para cada ocorrência dessa regra no código\n"+
+                        "O arquivo json de configuração também apresenta o atributo limit, que delimita o limite para o total de custo de cada regra.\n"+
+                        "Calcule o custo total para cada regra no seguinte código, se limitando a apenas as regras fornecidas no arquivo de configuração. Se o arquivo não possuir nenhuma das ocorrências, apenas zere o custo, mas ainda retorne o json, sem anotações ou observações.\n" +
+                        "Código a ser analisado:\n\n"
+                        codeText + "\n\n" +
+                        "O json de resposta da análise deve conter o array de objetos a seguinte exata estrutura:\n" +
+                        "1. name: Nome da regra analisada\n" +
+                        "2. totalCost: Custo total calculado para as ocorrências da regra"
+                */
 
-                val messageContent: String = "Given a code snippet and a JSON file containing the costs of Cognitive Driven Development (CDD) metrics, I want you to analyze the code and calculate the cognitive cost of each metric. The metrics include (but are not limited to) coupling, inheritance, conditional complexity, among others.\n" +
-                        "The input JSON contains the names of the metrics and their respective costs. Your task is to analyze the code and, based on the occurrences and characteristics of each metric, multiply the cost of each by the occurrences or degree of impact in the code.\n" +
-                        "In the end, you should return a JSON with the names of the metrics and the total calculated cost for each of them, as follows:\n" +
-                        "Input JSON:\n" +
-                        cddConfig +
-                        "Code to be analyzed:\n" +
-                        codeText +
-                        "Expected output:\n" +
-                        "{\n" +
-                        "    \"result\": {\n" +
-                        "        \"coupling\": 20,\n" +
-                        "        \"inheritance\": 0,\n" +
-                        "        \"conditional_complexity\": 8\n" +
-                        "    }\n" +
-                        "}\n" +
-                        "\n" +
-                        "For each metric:\n" +
-                        "1. Calculate the cost based on the occurrences or complexity detected in the code.\n" +
-                        "2. Multiply by the cost provided in the input JSON.\n" +
-                        "3. Return a JSON with the metric name and the total calculated cost."
+                val groqMessageContent = """
+                    Você é um plugin da IDE Intellij capaz de analisar código e a ocorrência de certas estruturas no código. Responda objetivamente apenas com um json, sem verbosidade, sem explicação e justificativa. Para cada regra, deve ser dado um custo de acordo com a ocorrência da regra. Utilize o seguinte arquivo de configuração:
+                
+                    $cddConfig
+                
+                    O arquivo json de configuração fornecido contém objetos com os atributos:
+                    1. name: Nome da regra que define qual tipo de estrutura deve ser analisada no código.
+                    2. cost: Custo para cada ocorrência dessa regra no código.
+                
+                    O arquivo json de configuração também apresenta o atributo limit, que delimita o limite para o total de custo de cada regra.
+                
+                    Calcule o custo total para cada regra no seguinte código, se limitando a apenas as regras fornecidas no arquivo de configuração. Se o arquivo não possuir nenhuma das ocorrências, apenas zere o custo, mas ainda retorne o json, sem anotações ou observações.
+                
+                    Código a ser analisado:
+                
+                    $codeText
+                
+                    O json de resposta da análise deve conter atributos com o nome de cada regra, e o valor de cada atributo deve ser o custo total calculado para a respectiva regra.
+                
+                    Exemplo da estrutura do json de resposta:
+                
+                    {
+                      "IF_STATEMENT": 1,
+                      "TRY_CATCH_STATEMENT": 0,
+                      "SWITCH_STATEMENT": 0,
+                      "CONDITION": 1,
+                      "FOR_STATEMENT": 0,
+                      "FOREACH_STATEMENT": 0,
+                      "WHILE_STATEMENT": 0,
+                      "METHOD_SIZE": 1,
+                      "CONTEXT_COUPLING": 0
+                    }
+                """.trimIndent()
 
                 val groqMessage = GroqMessage("user", groqMessageContent)
-                val groqRequest = GroqRequest(listOf(groqMessage), "llama3-8b-8192")
+                val groqRequest = GroqRequest(listOf(groqMessage), "gemma2-9b-it")
 
                 val dotenv = dotenv()
 
@@ -112,7 +136,12 @@ class GroqChat {
                     val groqResponse: GroqResponse = response.body()
 
                     val content = groqResponse.choices[0].message.content
-                    println("Resposta da API: $content")
+                        .replace("```json", "")
+                        .replace("```", "")
+                    //println("Resposta da API: $content")
+
+                    responseMetrics = Json.decodeFromString<Map<String, Int>>(content)
+
                 } else {
                     println("Erro na API: ${response.status}")
                 }
@@ -120,5 +149,7 @@ class GroqChat {
                 println("Falha ao obter resposta: $e")
             }
         }
+
+        return responseMetrics
     }
 }
